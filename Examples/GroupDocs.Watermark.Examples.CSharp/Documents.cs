@@ -1,4 +1,5 @@
-﻿using GroupDocs.Watermark.Office;
+﻿using GroupDocs.Watermark.Email;
+using GroupDocs.Watermark.Office;
 using GroupDocs.Watermark.Office.Cells;
 using GroupDocs.Watermark.Office.Diagram;
 using GroupDocs.Watermark.Office.Slides;
@@ -10,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace GroupDocs.Watermark.Examples.CSharp
@@ -20,7 +22,8 @@ namespace GroupDocs.Watermark.Examples.CSharp
         {
             // initialize file path
             //ExStart:SourcePDFFilePath
-            private const string FilePath = "Documents/sample.pdf";
+            private const string FILE_PATH = "Documents/sample.pdf";
+            private const string ATTACHMENT_PATH = "Documents/sample.docx";
             //ExEnd:SourcePDFFilePath
 
             /// <summary>
@@ -31,7 +34,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkToPDF
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Add text watermark
                         TextWatermark textWatermark = new TextWatermark("This is a test watermark", new Font("Arial", 8));
@@ -60,7 +63,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:GetDimensionsPDF
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         Console.WriteLine(doc.Pages[0].Width);
                         Console.WriteLine(doc.Pages[0].Height);
@@ -81,7 +84,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkToImagesPDF
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Initialize image or text watermark
                         TextWatermark watermark = new TextWatermark("Protected image", new Font("Arial", 8));
@@ -118,7 +121,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddArtifactWatermark
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Add text watermark
                         TextWatermark textWatermark = new TextWatermark("This is an artifact watermark", new Font("Arial", 8));
@@ -147,7 +150,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddAnnotationWatermark
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Add text watermark
                         TextWatermark textWatermark = new TextWatermark("This is a test watermark", new Font("Arial", 8));
@@ -176,7 +179,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddPrintOnlyAnnotationWatermark
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         TextWatermark textWatermark = new TextWatermark("This is a print only test watermark. It won't appear in view mode.", new Font("Arial", 8));
                         bool isPrintOnly = true;
@@ -202,7 +205,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveWatermarkFromPDF
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Initialize search criteria
                         ImageSearchCriteria imageSearchCriteria = new ImageDctHashSearchCriteria(@"D:\logo.png");
@@ -234,7 +237,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:ExtractXObjectInformation
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         foreach (PdfPage page in doc.Pages)
                         {
@@ -271,7 +274,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveXObject
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Remove XObject by index
                         doc.Pages[0].XObjects.RemoveAt(0);
@@ -297,7 +300,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkToXObjects
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Initialize image or text watermark
                         TextWatermark watermark = new TextWatermark("Protected image", new Font("Arial", 8));
@@ -337,7 +340,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:ExtractArtifactInformation
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         foreach (PdfPage page in doc.Pages)
                         {
@@ -377,7 +380,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveArtifact
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Remove Artifact by index
                         doc.Pages[0].Artifacts.RemoveAt(0);
@@ -403,7 +406,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkToArtifacts
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Initialize image or text watermark
                         TextWatermark watermark = new TextWatermark("Protected image", new Font("Arial", 8));
@@ -443,7 +446,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:ExtractAnnotationInformation
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         foreach (PdfPage page in doc.Pages)
                         {
@@ -481,7 +484,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveAnnotation
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Remove Annotation by index
                         doc.Pages[0].Annotations.RemoveAt(0);
@@ -507,7 +510,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkToAnnotations
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Initialize image or text watermark
                         TextWatermark watermark = new TextWatermark("Protected image", new Font("Arial", 8));
@@ -547,7 +550,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RasterizePDFDocument
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Initialize image or text watermark
                         TextWatermark watermark = new TextWatermark("Do not copy", new Font("Arial", 8));
@@ -583,7 +586,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RasterizePDFDocumentWithPageNumber
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Initialize image or text watermark
                         TextWatermark watermark = new TextWatermark("Do not copy", new Font("Arial", 8));
@@ -619,7 +622,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkWithPageMrginType
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         var watermark = new TextWatermark("Test watermark", new Font("Arial", 42));
                         watermark.HorizontalAlignment = HorizontalAlignment.Right;
@@ -648,7 +651,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveXObjectWithParticularTextFormatting
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         foreach (PdfPage page in doc.Pages)
                         {
@@ -682,7 +685,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveArtifactsWithParticularTextFormatting
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         foreach (PdfPage page in doc.Pages)
                         {
@@ -716,7 +719,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveAnnotationsWithParticularTextFormatting
-                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         foreach (PdfPage page in doc.Pages)
                         {
@@ -741,12 +744,160 @@ namespace GroupDocs.Watermark.Examples.CSharp
                     Console.Write(exp.Message);
                 }
             }
+            
+            /// <summary>
+            /// Extract all attachments from a PDF document
+            /// </summary>
+            public static void ExtractAllAttachments()
+            {
+                try
+                {
+                    //ExStart:ExtractAllAttachments
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        foreach (PdfAttachment attachment in doc.Attachments)
+                        {
+                            Console.WriteLine("Name: {0}", attachment.Name);
+                            Console.WriteLine("Description: {0}", attachment.Description);
+                            Console.WriteLine("File format: {0}", attachment.DocumentInfo.FileFormat);
+
+                            // Save the attached file on disk
+                            //File.WriteAllBytes(Path.Combine(Utilities.MapSourceFilePath(FilePath), attachment.Name), attachment.Content);
+                        }
+                    }
+                    //ExEnd:ExtractAllAttachments
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+            
+            /// <summary>
+            /// Add an attachment to a PDF document
+            /// </summary>
+            public static void AddAttachment()
+            {
+                try
+                {
+                    //ExStart:AddAttachment
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        //foreach (PdfAttachment attachment in doc.Attachments)
+                        {
+                            // Add the attachment
+                            doc.Attachments.Add(File.ReadAllBytes(Utilities.MapSourceFilePath(ATTACHMENT_PATH)), "sample", "sample doc as attachment");
+
+                            // Save changes
+                            doc.Save();
+                        }
+                    }
+                    //ExEnd:AddAttachment
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+            
+            /// <summary>
+            /// Remove particular attachments from a PDF document
+            /// </summary>
+            public static void RemoveAttachment()
+            {
+                try
+                {
+                    //ExStart:RemoveAttachment
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        for (int i = doc.Attachments.Count - 1; i >= 0; i--)
+                        {
+                            PdfAttachment attachment = doc.Attachments[i];
+
+                            // Remove all attached pdf files with a particular name
+                            if (attachment.Name.Contains("sample") && attachment.DocumentInfo.FileFormat == FileFormat.Docx)
+                            {
+                                doc.Attachments.RemoveAt(i);
+                            }
+                        }
+                        doc.Save();
+                    }
+                    //ExEnd:RemoveAttachment
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+            
+            /// <summary>
+            /// Add watermark to all attached files of supported types
+            /// </summary>
+            public static void AddWatermarkToAttachment()
+            {
+                try
+                {
+
+                    //ExStart:AddWatermarkToAttachment
+                    TextWatermark watermark = new TextWatermark("This is WaterMark on Attachment", new Font("Arial", 19));
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        foreach (PdfAttachment attachment in doc.Attachments)
+                        {
+                            // Check if the attached file is supported by GroupDocs.Watermark
+                            if (attachment.DocumentInfo.FileFormat != FileFormat.Undefined && !attachment.DocumentInfo.IsEncrypted)
+                            {
+                                // Load the attached document
+                                using (Document attachedDocument = attachment.LoadDocument())
+                                {
+                                    // Add wateramrk
+                                    attachedDocument.AddWatermark(watermark);
+
+                                    // Save changes in the attached file
+                                    attachedDocument.Save();
+                                }
+                            }
+                        }
+                        doc.Save();
+                    }
+                    //ExEnd:AddWatermarkToAttachment
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+           
+            /// <summary>
+            /// Search for images in the attached files 
+            /// </summary>
+            public static void SearchImageInAttachment()
+            {
+                try
+                {
+                    //ExStart:SearchImageInAttachment
+                    using (PdfDocument doc = Document.Load<PdfDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        // Consider only the attached images
+                        doc.SearchableObjects.PdfSearchableObjects = PdfSearchableObjects.AttachedImages;
+
+                        // Search for similar images
+                        WatermarkableImageCollection possibleWatermarks = doc.FindImages();
+
+                    }
+                    //ExEnd:SearchImageInAttachment
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
         }
         public static class Word
         {
             // initialize file path
             //ExStart:SourceWordFilePath
-            private const string FilePath = "Documents/sample.docx";
+            private const string FILE_PATH = "Documents/sample.docx";
             //ExEnd:SourceWordFilePath
 
             /// <summary>
@@ -757,7 +908,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkToSection
-                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         TextWatermark watermark = new TextWatermark("Test watermark", new Font("Arial", 19));
 
@@ -782,7 +933,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkToParticuarPageWord
-                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         TextWatermark textWatermark = new TextWatermark("DRAFT", new Font("Arial", 42));
 
@@ -831,7 +982,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:LinkHeaderFooterInSection
-                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Link footer for even numbered pages to corresponding footer in previous section
                         doc.Sections[1].HeadersFooters[OfficeHeaderFooterType.FooterEven].IsLinkedToPrevious = true;
@@ -854,7 +1005,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:LinkAllHeaderFooterInSection
-                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Link footer for even numbered pages to corresponding footer in previous section
                         doc.Sections[1].HeadersFooters[1].IsLinkedToPrevious = true;
@@ -877,7 +1028,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:SetDifferentFirstPageHeaderFooter
-                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         doc.Sections[0].PageSetup.DifferentFirstPageHeaderFooter = true;
                         doc.Sections[0].PageSetup.OddAndEvenPagesHeaderFooter = true;
@@ -899,7 +1050,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddImageWatermarkToWord
-                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         using (ImageWatermark watermark = new ImageWatermark(@"D:\large.png"))
                         {
@@ -931,7 +1082,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkToImagesWordSection
-                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         TextWatermark watermark = new TextWatermark("Protected image", new Font("Arial", 8));
                         watermark.HorizontalAlignment = HorizontalAlignment.Center;
@@ -998,7 +1149,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkWithTextEffectsWord
-                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         TextWatermark watermark = new TextWatermark("Test watermark", new Font("Arial", 19));
 
@@ -1057,7 +1208,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveWatermarkFromSection
-                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Initialize search criteria
                         ImageSearchCriteria imageSearchCriteria = new ImageDctHashSearchCriteria(@"D:\logo.png");
@@ -1090,7 +1241,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:FindWatermarkInHeaderFooter
-                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Initialize search criteria
                         ImageSearchCriteria imageSearchCriteria = new ImageDctHashSearchCriteria(@"D:\logo.png");
@@ -1175,7 +1326,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveShapeWordDocument
-                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Remove shape by index
                         doc.Sections[0].Shapes.RemoveAt(0);
@@ -1240,7 +1391,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveTextShapesWithParticularTextFormattingWord
-                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         foreach (WordsSection section in doc.Sections)
                         {
@@ -1274,7 +1425,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveHyperlinksWord
-                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Replace hyperlink
                         doc.Sections[0].Shapes[0].Hyperlink = "https://www.groupdocs.com/";
@@ -1291,12 +1442,136 @@ namespace GroupDocs.Watermark.Examples.CSharp
                     Console.Write(exp.Message);
                 }
             }
+
+            /// <summary>
+            /// Replaces text for particular shape
+            /// </summary> 
+            public static void ReplaceTextForParticularShape()
+            {
+                try
+                {
+                    //ExStart:ReplaceTextForParticularShape_18.2
+                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        foreach (WordsShape shape in doc.Sections[0].Shapes)
+                        {
+                            if (shape.Text.Contains("Some text"))
+                            {
+                                shape.Text = "Another text";
+                            }
+                        }
+
+                        // Save document
+                        doc.Save();
+                    }
+                    //ExEnd:ReplaceTextForParticularShape_18.2
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Replaces particular shape's text with formatted text
+            /// </summary> 
+            public static void ReplaceShapeTextWithFormattedText()
+            {
+                try
+                {
+                    //ExStart:ReplaceShapeTextWithFormattedText_18.2
+                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        foreach (WordsShape shape in doc.Sections[0].Shapes)
+                        {
+                            if (shape.Text.Contains("Some text"))
+                            {
+                                shape.FormattedTextFragments.Clear();
+                                shape.FormattedTextFragments.Add("Another text", new Font("Calibri", 19, FontStyle.Bold), Color.Red, Color.Aqua);
+                            }
+                        }
+
+                        // Save document
+                        doc.Save();
+                    }
+                    //ExEnd:ReplaceShapeTextWithFormattedText_18.2
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Replaces shape image
+            /// </summary> 
+            public static void ReplaceShapeImage()
+            {
+                try
+                {
+                    //ExStart:ReplaceShapeImage_18.2
+                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        foreach (WordsShape shape in doc.Sections[0].Shapes)
+                        {
+                            if (shape.Image != null)
+                            {
+                                shape.Image = new WordsWatermarkableImage(File.ReadAllBytes(@"D:\test.png"));
+                            }
+                        }
+
+                        // Save document
+                        doc.Save();
+                    }
+                    //ExEnd:ReplaceShapeImage_18.2
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Modifies shape properties
+            /// </summary> 
+            public static void ModifyShapeProperties()
+            {
+                try
+                {
+                    //ExStart:ModifyShapeProperties_18.2
+                    using (WordsDocument doc = Document.Load<WordsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        foreach (WordsShape shape in doc.Sections[0].Shapes)
+                        {
+                            if (shape.Text.Contains("Some text"))
+                            {
+                                shape.AlternativeText = "watermark";
+                                shape.RotateAngle = 30;
+                                shape.X = 200;
+                                shape.Y = 200;
+                                shape.Height = 100;
+                                shape.Width = 400;
+                                shape.BehindText = false;
+                            }
+                        }
+
+                        // Save document
+                        doc.Save();
+                    }
+                    //ExEnd:ModifyShapeProperties_18.2
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
         }
         public static class Excel
         {
             // initialize file path
             //ExStart:SourceExcelFilePath
-            private const string FilePath = "Documents/sample.xlsx";
+            private const string FILE_PATH = "Documents/sample.xlsx";
+            private const string ATTACHMENT_PATH = "Images/sample.jpg";
             //ExEnd:SourceExcelFilePath
 
             /// <summary>
@@ -1307,7 +1582,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkToExcel
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Add text watermark
                         TextWatermark textWatermark = new TextWatermark("Test watermark", new Font("Arial", 8));
@@ -1336,7 +1611,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:GetContentAreaDimensions
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Get the size of content area
                         Console.WriteLine(doc.Worksheets[0].ContentAreaHeight);
@@ -1362,7 +1637,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkToImagesExcelWorksheet
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         TextWatermark watermark = new TextWatermark("Protected image", new Font("Arial", 8));
                         watermark.HorizontalAlignment = HorizontalAlignment.Center;
@@ -1420,7 +1695,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkUsingCellsShapeSettings
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         TextWatermark watermark = new TextWatermark("Test watermark", new Font("Segoe UI", 19));
                         CellsShapeSettings shapeSettings = new CellsShapeSettings();
@@ -1455,7 +1730,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkWithTextEffectsToExcel
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         TextWatermark watermark = new TextWatermark("Test watermark", new Font("Segoe UI", 19));
 
@@ -1484,7 +1759,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkWithImageEffectsToExcel
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         using (var watermark = new ImageWatermark(@"D:\logo.tif"))
                         {
@@ -1538,7 +1813,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkAsBackgroundWithRelativeSizeAndPosition
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         using (ImageWatermark watermark = new ImageWatermark(@"D:\logo.gif"))
                         {
@@ -1572,7 +1847,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkTextAsBackgroundToExcel
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         TextWatermark watermark = new TextWatermark(WatermarkText, new Font("Segoe UI", 19));
                         watermark.HorizontalAlignment = HorizontalAlignment.Center;
@@ -1603,7 +1878,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddImageWatermarkIntoHeaderFooter
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         using (var watermark = new ImageWatermark(@"D:\logo.tif"))
                         {
@@ -1632,7 +1907,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddTextWatermarkIntoHeaderFooter
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         TextWatermark watermark = new TextWatermark(WatermarkText, new Font("Segoe UI", 19, FontStyle.Bold));
                         watermark.ForegroundColor = Color.Red;
@@ -1658,7 +1933,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveWatermarkExcelWorksheet
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Initialize search criteria
                         ImageSearchCriteria imageSearchCriteria = new ImageDctHashSearchCriteria(@"D:\logo.png");
@@ -1691,7 +1966,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:GetShapesInformationExcel
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         foreach (CellsWorksheet worksheet in doc.Worksheets)
                         {
@@ -1734,7 +2009,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveShapeExcelWorksheet
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Remove shape by index
                         doc.Worksheets[0].Shapes.RemoveAt(0);
@@ -1800,7 +2075,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:GetInformationOfWorksheetBackgrounds
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         foreach (CellsWorksheet worksheet in doc.Worksheets)
                         {
@@ -1828,7 +2103,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveWorksheetBackground
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         doc.Worksheets[0].BackgroundImage = null;
                         doc.Save();
@@ -1849,7 +2124,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkToBackgroundImagesExcel
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Initialize image or text watermark
                         TextWatermark watermark = new TextWatermark("Protected image", new Font("Arial", 8));
@@ -1885,7 +2160,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:GetHeaderFooterInformationExcel
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         foreach (CellsWorksheet worksheet in doc.Worksheets)
                         {
@@ -1922,7 +2197,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:ClearHeaderFooterExcel
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         foreach (CellsHeaderFooterSection section in doc.Worksheets[0].HeadersFooters[OfficeHeaderFooterType.HeaderPrimary].Sections)
                         {
@@ -1947,7 +2222,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:ClearSectionOfHeaderFooterExcel
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         CellsHeaderFooterSection section = doc.Worksheets[0]
                            .HeadersFooters[OfficeHeaderFooterType.HeaderEven]
@@ -1973,7 +2248,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkToImagesInHeaderFooterExcel
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Initialize image or text watermark
                         TextWatermark watermark = new TextWatermark("Protected image", new Font("Arial", 8));
@@ -2014,7 +2289,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:SetBackgroundImageForChart
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         doc.Worksheets[0].Charts[0].ImageFillFormat.BackgroundImage = new CellsWatermarkableImage(File.ReadAllBytes(@"D:\test.png"));
                         doc.Worksheets[0].Charts[0].ImageFillFormat.Transparency = 0.5;
@@ -2037,7 +2312,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveTextShapesWithParticularTextFormattingExcel
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         foreach (CellsWorksheet section in doc.Worksheets)
                         {
@@ -2071,7 +2346,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveHyperlinksExcel
-                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Replace hyperlink
                         doc.Worksheets[0].Charts[0].Hyperlink = "https://www.aspose.com/";
@@ -2081,7 +2356,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                         doc.Worksheets[1].Charts[0].Hyperlink = null;
                         doc.Worksheets[1].Shapes[0].Hyperlink = null;
 
-                        doc.Save();  
+                        doc.Save();
                     }
                     //ExEnd:RemoveHyperlinksExcel
                 }
@@ -2090,12 +2365,333 @@ namespace GroupDocs.Watermark.Examples.CSharp
                     Console.Write(exp.Message);
                 }
             }
+
+            /// <summary>
+            /// Extract information about all attachments in an Excel document
+            /// </summary>
+            public static void ExtractAllAttachments()
+            {
+                try
+                {
+                    //ExStart:ExtractAllAttachments
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        foreach (CellsWorksheet worksheet in doc.Worksheets)
+                        {
+                            foreach (CellsAttachment attachment in worksheet.Attachments)
+                            {
+                                Console.WriteLine("Alternative text: {0}", attachment.AlternativeText);
+                                Console.WriteLine("Attachment frame x-coordinate: {0}", attachment.X);
+                                Console.WriteLine("Attachment frame y-coordinate: {0}", attachment.Y);
+                                Console.WriteLine("Attachment frame width: {0}", attachment.Width);
+                                Console.WriteLine("Attachment frame height: {0}", attachment.Height);
+                                Console.WriteLine("Preview image size: {0}", attachment.PreviewImageContent != null ? attachment.PreviewImageContent.Length : 0);
+
+                                if (attachment.IsLink)
+                                {
+                                    // The document contains only a link to the attached file
+                                    Console.WriteLine("Full path to the attached file: {0}", attachment.SourceFullName);
+                                }
+                                else
+                                {
+                                    // The attached file is stored in the document
+                                    Console.WriteLine("File format: {0}", attachment.DocumentInfo.FileFormat);
+                                    Console.WriteLine("Name of the source file: {0}", attachment.SourceFullName);
+                                    Console.WriteLine("File size: {0}", attachment.Content.Length);
+                                }
+                            }
+                        }
+                    }
+                    //ExEnd:ExtractAllAttachments
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Add an attachment to an Excel document
+            /// </summary>
+            public static void AddAttachment()
+            {
+                try
+                {
+                    //ExStart:AddAttachment
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        CellsWorksheet worksheet = doc.Worksheets[0];
+
+                        // Add the attachment
+                        worksheet.Attachments.AddAttachment(
+                            File.ReadAllBytes(Utilities.MapSourceFilePath(ATTACHMENT_PATH)), // File content
+                            "sample document", // Source file full name (the extension is used to determine appropriate application to open the file) 
+                            File.ReadAllBytes(Utilities.MapSourceFilePath(ATTACHMENT_PATH)), // Preview image content
+                            50, // X-coordinate of the attachment frame
+                            100, // Y-coordinate of the attachment frame
+                            200, // Attachment frame width
+                            400); // Attachment frame height
+
+                        // Save changes
+                        doc.Save();
+                    }
+                    //ExEnd:AddAttachment
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Add a linked file to an Excel document
+            /// </summary>
+            public static void AddLinkedAttachment()
+            {
+                try
+                {
+                    //ExStart:AddLinkedAttachment
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        CellsWorksheet worksheet = doc.Worksheets[0];
+
+                        // Add the attachment
+                        worksheet.Attachments.AddLink(
+                            Utilities.MapSourceFilePath(ATTACHMENT_PATH), // Source file path
+                            File.ReadAllBytes(Utilities.MapSourceFilePath(ATTACHMENT_PATH)), // Preview image content
+                            50, // X-coordinate of the attachment frame
+                            100, // Y-coordinate of the attachment frame
+                            200, // Attachment frame width
+                            400); // Attachment frame height
+
+                        // Save changes
+                        doc.Save();
+                    }
+                    //ExEnd:AddLinkedAttachment
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Remove particular attachments from an Excel document
+            /// </summary>
+            public static void RemoveAttachment()
+            {
+                try
+                {
+                    //ExStart:RemoveAttachment
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        foreach (CellsWorksheet worksheet in doc.Worksheets)
+                        {
+                            for (int i = worksheet.Attachments.Count - 1; i >= 0; i--)
+                            {
+                                CellsAttachment attachment = worksheet.Attachments[i];
+                                if (attachment.IsLink && !File.Exists(attachment.SourceFullName) || // Linked file that is not available at this moment
+                                    attachment.DocumentInfo.IsEncrypted) // Attached file protected with a password
+                                {
+                                    // Remove the file if it meets at least one of the conditions above
+                                    worksheet.Attachments.RemoveAt(i);
+                                }
+                            }
+                        }
+                        // Save changes
+                        doc.Save();
+                    }
+                    //ExEnd:RemoveAttachment
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Add watermark to all attached files of supported types
+            /// </summary>
+            public static void AddWatermarkToAttachment()
+            {
+                try
+                {
+                    TextWatermark watermark = new TextWatermark("Test watermark", new Font("Arial", 19));
+                    //ExStart:AddWatermarkToAttachment
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        foreach (CellsWorksheet worksheet in doc.Worksheets)
+                        {
+                            foreach (CellsAttachment attachment in worksheet.Attachments)
+                            {
+                                // Check if the attached file is supported by GroupDocs.Watermark
+                                if (attachment.DocumentInfo.FileFormat != FileFormat.Undefined && !attachment.DocumentInfo.IsEncrypted)
+                                {
+                                    // Load the attached document
+                                    using (Document attachedDocument = attachment.LoadDocument())
+                                    {
+                                        // Add wateramrk
+                                        attachedDocument.AddWatermark(watermark);
+
+                                        // Save changes in the attached file
+                                        attachedDocument.Save();
+                                    }
+                                }
+                            }
+                        }
+                        // Save changes
+                        doc.Save();
+                    }
+                    //ExEnd:AddWatermarkToAttachment
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Search for images in the attached files using FindImages or FindWatermarks method
+            /// </summary>
+            public static void SearchImageInAttachment()
+            {
+                try
+                {
+                    //ExStart:SearchImageInAttachment
+                    using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        // Consider only the attached images
+                        doc.SearchableObjects.CellsSearchableObjects = CellsSearchableObjects.AttachedImages;
+
+                        // Specify sample image to compare document images with
+                        ImageSearchCriteria criteria = new ImageDctHashSearchCriteria(Utilities.MapSourceFilePath(ATTACHMENT_PATH));
+
+                        // Search for similar images
+                        PossibleWatermarkCollection possibleWatermarks = doc.FindWatermarks(criteria);
+
+                        // Remove or modify found image watermarks
+                    }
+                    //ExEnd:SearchImageInAttachment
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Replaces text for particular shapes
+            /// </summary>
+            public static void ReplaceTextForParticularShapes()
+            {
+                //ExStart:ReplaceTextForParticularShapes_17.12
+                using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                {
+                    foreach (CellsShape shape in doc.Worksheets[0].Shapes)
+                    {
+                        if (shape.Text == "© Aspose 2016")
+                        {
+                            shape.Text = "© GroupDocs 2017";
+                        }
+                    }
+                    doc.Save();
+                }
+                //ExEnd:ReplaceTextForParticularShapes_17.12
+            }
+
+            /// <summary>
+            /// Replaces text with formatting for particular shapes
+            /// </summary>
+            public static void ReplaceTextWithFormattingForParticularShapes()
+            {
+                //ExStart:ReplaceTextWithFormattingForParticularShapes_17.12
+                using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                {
+                    foreach (CellsShape shape in doc.Worksheets[0].Shapes)
+                    {
+                        if (shape.Text == "© Aspose 2016")
+                        {
+                            shape.FormattedTextFragments.Clear();
+                            shape.FormattedTextFragments.Add("© GroupDocs 2017", new Font("Calibri", 19, FontStyle.Bold), Color.Red, Color.Aqua);
+                        }
+                    }
+                    doc.Save();
+                }
+                //ExEnd:ReplaceTextWithFormattingForParticularShapes_17.12
+            }
+
+            /// <summary>
+            /// Replaces image of particular shapes
+            /// </summary>
+            public static void ReplaceImageOfParticularShapes()
+            {
+                //ExStart:ReplaceImageOfParticularShapes_17.12
+                using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                {
+                    foreach (CellsShape shape in doc.Worksheets[0].Shapes)
+                    {
+                        if (shape.Image != null)
+                        {
+                            shape.Image = new CellsWatermarkableImage(File.ReadAllBytes(@"D:\test.png"));
+                        }
+                    }
+                    doc.Save();
+                }
+                //ExEnd:ReplaceImageOfParticularShapes_17.12
+            }
+
+            /// <summary>
+            /// Sets background image for particular shapes
+            /// </summary>
+            public static void SetBackgroundImageForParticularShapes()
+            {
+                //ExStart:SetBackgroundImageForParticularShapes_17.12
+                using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                {
+                    foreach (CellsShape shape in doc.Worksheets[0].Shapes)
+                    {
+                        if (shape.Text == "© Aspose 2016")
+                        {
+                            shape.ImageFillFormat.BackgroundImage = new CellsWatermarkableImage(File.ReadAllBytes(@"D:\test.png"));
+                            shape.ImageFillFormat.Transparency = 0.5;
+                            shape.ImageFillFormat.TileAsTexture = true;
+                        }
+                    }
+                    doc.Save();
+                }
+                //ExEnd:SetBackgroundImageForParticularShapes_17.12
+            }
+
+            /// <summary>
+            /// Updates shape properties
+            /// </summary>
+            public static void UpdateShapeProperties()
+            {
+                //ExStart:UpdateShapeProperties_17.12
+                using (CellsDocument doc = Document.Load<CellsDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                {
+                    foreach (CellsShape shape in doc.Worksheets[0].Shapes)
+                    {
+                        if (shape.Text == "© Aspose 2016")
+                        {
+                            shape.AlternativeText = "watermark";
+                            shape.RotateAngle = 30;
+                            shape.X = 200;
+                            shape.Y = 200;
+                            shape.Width = 400;
+                            shape.Height = 100;
+                        }
+                    }
+                    doc.Save();
+                }
+                //ExEnd:UpdateShapeProperties_17.12
+            }
         }
         public static class PowerPoint
         {
             // initialize file path
             //ExStart:SourcePowerPointFilePath
-            private const string FilePath = "Documents/sample.pptx";
+            private const string FILE_PATH = "Documents/sample.pptx";
             //ExEnd:SourcePowerPointFilePath
 
             /// <summary>
@@ -2106,7 +2702,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkToPowerPointSlide
-                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Add text watermark
                         TextWatermark textWatermark = new TextWatermark("Test watermark", new Font("Arial", 8));
@@ -2135,7 +2731,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:GetDimensionsOfSlide
-                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         Console.WriteLine(doc.SlideWidth);
                         Console.WriteLine(doc.SlideHeight);
@@ -2249,7 +2845,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkWithSlidesShapeSettings
-                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         TextWatermark watermark = new TextWatermark("Test watermark", new Font("Arial", 19));
                         watermark.IsBackground = true;
@@ -2343,7 +2939,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveWatermarkPowerPoint
-                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Initialize search criteria
                         ImageSearchCriteria imageSearchCriteria = new ImageDctHashSearchCriteria(@"D:\logo.png");
@@ -2376,7 +2972,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:GetShapesInformationPowerPoint
-                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         foreach (SlidesSlide slide in doc.Slides)
                         {
@@ -2485,15 +3081,15 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:GetInformationOfSlideBackgroundsPowerPointDocument
-                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         foreach (SlidesSlide slide in doc.Slides)
                         {
-                            if (slide.BackgroundImage != null)
+                            if (slide.ImageFillFormat.BackgroundImage != null)
                             {
-                                Console.WriteLine(slide.BackgroundImage.Width);
-                                Console.WriteLine(slide.BackgroundImage.Height);
-                                Console.WriteLine(slide.BackgroundImage.GetBytes().Length);
+                                Console.WriteLine(slide.ImageFillFormat.BackgroundImage.Width);
+                                Console.WriteLine(slide.ImageFillFormat.BackgroundImage.Height);
+                                Console.WriteLine(slide.ImageFillFormat.BackgroundImage.GetBytes().Length);
                             }
                         }
                     }
@@ -2513,9 +3109,9 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveBackgroundPowerPointSlide
-                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
-                        doc.Slides[0].BackgroundImage = null;
+                        doc.Slides[0].ImageFillFormat.BackgroundImage = null;
                     }
                     //ExEnd:RemoveBackgroundPowerPointSlide
                 }
@@ -2533,7 +3129,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkToAllBackgroundImagesPowerPointSlide
-                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Initialize image or text watermark
                         TextWatermark watermark = new TextWatermark("Protected image", new Font("Arial", 8));
@@ -2545,10 +3141,10 @@ namespace GroupDocs.Watermark.Examples.CSharp
 
                         foreach (SlidesSlide slide in doc.Slides)
                         {
-                            if (slide.BackgroundImage != null)
+                            if (slide.ImageFillFormat.BackgroundImage != null)
                             {
                                 // Add watermark to the image
-                                slide.BackgroundImage.AddWatermark(watermark);
+                                slide.ImageFillFormat.BackgroundImage.AddWatermark(watermark);
                             }
                         }
 
@@ -2570,7 +3166,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:SetTiledSemitransparentBackground
-                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         SlidesSlide slide = doc.Slides[0];
                         slide.ImageFillFormat.BackgroundImage = new SlidesWatermarkableImage(File.ReadAllBytes(@"D:\background.png"));
@@ -2594,7 +3190,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:SetBackgroundImageForChartPowerPoint
-                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         doc.Slides[0].Charts[0].ImageFillFormat.BackgroundImage = new SlidesWatermarkableImage(File.ReadAllBytes(@"D:\test.png"));
                         doc.Slides[0].Charts[0].ImageFillFormat.Transparency = 0.5;
@@ -2617,7 +3213,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveTextShapesWithParticularTextFormattingPowerPoint
-                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         foreach (SlidesSlide slide in doc.Slides)
                         {
@@ -2651,14 +3247,14 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveHyperlinksPowerPoint
-                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Replace hyperlink
                         doc.Slides[0].Charts[0].SetHyperlink(SlidesHyperlinkActionType.MouseClick, "https://www.aspose.com/");
-                        doc.Slides[0].Shapes[0].SetHyperlink(SlidesHyperlinkActionType.MouseClick,"https://www.groupdocs.com/");
+                        doc.Slides[0].Shapes[0].SetHyperlink(SlidesHyperlinkActionType.MouseClick, "https://www.groupdocs.com/");
 
                         // Remove hyperlink
-                        doc.Slides[1].Charts[0].SetHyperlink(SlidesHyperlinkActionType.MouseClick,null);
+                        doc.Slides[1].Charts[0].SetHyperlink(SlidesHyperlinkActionType.MouseClick, null);
                         doc.Slides[1].Shapes[0].SetHyperlink(SlidesHyperlinkActionType.MouseClick, null);
 
                         doc.Save();
@@ -2679,7 +3275,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:ReplaceMouseOverHyperlinks
-                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         foreach (var slide in doc.Slides)
                         {
@@ -2737,7 +3333,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveHyperlinksUsingFindWatermark
-                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         doc.SearchableObjects.SlidesSearchableObjects = SlidesSearchableObjects.Hyperlinks;
 
@@ -2758,12 +3354,164 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 }
             }
 
+            /// <summary>
+            /// Replaces text for a particular shape
+            /// </summary> 
+            public static void ReplaceTextForParticularShape()
+            {
+                try
+                {
+                    //ExStart:ReplaceTextForParticularShapePowerPoint_18.1
+                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        foreach (SlidesShape shape in doc.Slides[0].Shapes)
+                        {
+                            if (shape.Text == "© Aspose 2016")
+                            {
+                                shape.Text = "© GroupDocs 2018";
+                            }
+                        }
+
+                        // Save changes
+                        doc.Save();
+                    }
+                    //ExEnd:ReplaceTextForParticularShapePowerPoint_18.1
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Replaces text with a particular formatting
+            /// </summary> 
+            public static void ReplaceTextWithParticularFormatting()
+            {
+                try
+                {
+                    //ExStart:ReplaceTextWithParticularFormattingPowerPoint_18.1
+                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        foreach (SlidesShape shape in doc.Slides[0].Shapes)
+                        {
+                            if (shape.Text == "© Aspose 2016")
+                            {
+                                shape.FormattedTextFragments.Clear();
+                                shape.FormattedTextFragments.Add("© GroupDocs 2017", new Font("Calibri", 19, FontStyle.Bold), Color.Red, Color.Aqua);
+                            }
+                        }
+
+                        // Save changes
+                        doc.Save();
+                    }
+                    //ExEnd:ReplaceTextWithParticularFormattingPowerPoint_18.1
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Replaces shape image
+            /// </summary> 
+            public static void ReplaceShapeImage()
+            {
+                try
+                {
+                    //ExStart:ReplaceShapeImagePowerPoint_18.1
+                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        foreach (SlidesShape shape in doc.Slides[0].Shapes)
+                        {
+                            if (shape.Image != null)
+                            {
+                                shape.Image = new SlidesWatermarkableImage(File.ReadAllBytes(@"D:\test.png"));
+                            }
+                        }
+
+                        // Save changes
+                        doc.Save();
+                    }
+                    //ExEnd:ReplaceShapeImagePowerPoint_18.1
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Sets background image for particular shapes
+            /// </summary> 
+            public static void SetBackgroundImageForParticularShapes()
+            {
+                try
+                {
+                    //ExStart:SetBackgroundImageForParticularShapesPowerPoint_18.1
+                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        foreach (SlidesShape shape in doc.Slides[0].Shapes)
+                        {
+                            if (shape.Text == "© Aspose 2016")
+                            {
+                                shape.ImageFillFormat.BackgroundImage = new SlidesWatermarkableImage(File.ReadAllBytes(@"D:\test.png"));
+                                shape.ImageFillFormat.Transparency = 0.5;
+                                shape.ImageFillFormat.TileAsTexture = true;
+                            }
+                        }
+
+                        // Save changes
+                        doc.Save();
+                    }
+                    //ExEnd:SetBackgroundImageForParticularShapesPowerPoint_18.1
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Modifies shape properties
+            /// </summary> 
+            public static void ModifyShapeProperties()
+            {
+                try
+                {
+                    //ExStart:ModifyShapePropertiesPowerPoint_18.1
+                    using (SlidesDocument doc = Document.Load<SlidesDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        foreach (SlidesShape shape in doc.Slides[0].Shapes)
+                        {
+                            if (shape.Text == "© Aspose 2016")
+                            {
+                                shape.AlternativeText = "watermark";
+                                shape.RotateAngle = 30;
+                                shape.X = 200;
+                                shape.Y = 200;
+                                shape.Width = 400;
+                                shape.Height = 100;
+                            }
+                        }
+
+                        // Save changes
+                        doc.Save();
+                    }
+                    //ExEnd:ModifyShapePropertiesPowerPoint_18.1
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
         }
         public static class Visio
         {
             // initialize file path
             //ExStart:SourceVisioFilePath
-            private const string FilePath = "Documents/sample.vsdx";
+            private const string FILE_PATH = "Documents/sample.vsdx";
             //ExEnd:SourceVisioFilePath
 
             /// <summary>
@@ -2774,7 +3522,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkToAllPagesOfParticularType
-                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Initialize text watermark
                         TextWatermark textWatermark = new TextWatermark("Test watermark 1", new Font("Calibri", 19));
@@ -2806,7 +3554,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkToSeparateBackgroundPage
-                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Initialize watermark of any supported type
                         TextWatermark textWatermark = new TextWatermark("Test watermark 1", new Font("Calibri", 19));
@@ -2832,7 +3580,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkToParticularPage
-                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Add text watermark
                         TextWatermark textWatermark = new TextWatermark("Test watermark", new Font("Calibri", 19));
@@ -2861,7 +3609,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:GetPagesInformationVisio
-                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         foreach (DiagramPage page in doc.Pages)
                         {
@@ -2896,7 +3644,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:AddWatermarkToImagesVisio
-                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         TextWatermark watermark = new TextWatermark("Protected image", new Font("Arial", 8));
                         watermark.HorizontalAlignment = HorizontalAlignment.Center;
@@ -2932,7 +3680,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:LockWatermarkShape
-                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         TextWatermark watermark = new TextWatermark("Test watermark", new Font("Arial", 19));
 
@@ -2957,7 +3705,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveWatermarkVisio
-                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Initialize search criteria
                         ImageSearchCriteria imageSearchCriteria = new ImageDctHashSearchCriteria(@"D:\logo.png");
@@ -2987,7 +3735,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:GetShapesInformationVisio
-                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         foreach (DiagramPage page in doc.Pages)
                         {
@@ -3026,7 +3774,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveShapeVisio
-                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Remove shape by index
                         doc.Pages[0].Shapes.RemoveAt(0);
@@ -3052,7 +3800,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:GetHeaderFooterInformationVisio
-                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Get header&footer font settings
                         Console.WriteLine(doc.HeaderFooter.Font.FamilyName);
@@ -3093,7 +3841,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveOrReplaceHeaderFooter
-                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         // Remove header
                         doc.HeaderFooter.HeaderCenter = null;
@@ -3122,7 +3870,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveTextShapesWithParticularTextFormattingVisio
-                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         foreach (DiagramPage page in doc.Pages)
                         {
@@ -3156,7 +3904,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
                 try
                 {
                     //ExStart:RemoveHyperlinksVisio
-                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FilePath)))
+                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
                     {
                         DiagramShape shape = doc.Pages[0].Shapes[0];
                         for (int i = shape.Hyperlinks.Count - 1; i >= 0; i--)
@@ -3176,6 +3924,395 @@ namespace GroupDocs.Watermark.Examples.CSharp
                     Console.Write(exp.Message);
                 }
             }
+
+            /// <summary>
+            /// Replaces text for particular shapes
+            /// </summary> 
+            public static void ReplaceTextForParticularShapes()
+            {
+                try
+                {
+                    //ExStart:ReplaceTextForParticularShapesVisio_18.1
+                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        foreach (DiagramShape shape in doc.Pages[0].Shapes)
+                        {
+                            if (shape.Text != null && shape.Text.Contains("© Aspose 2016"))
+                            {
+                                shape.Text = "© GroupDocs 2017";
+                            }
+                        }
+
+                        // Save changes
+                        doc.Save();
+                    }
+                    //ExEnd:ReplaceTextForParticularShapesVisio_18.1
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Replaces text with formatting
+            /// </summary> 
+            public static void ReplaceTextWithFormatting()
+            {
+                try
+                {
+                    //ExStart:ReplaceTextWithFormattingVisio_18.1
+                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        foreach (DiagramShape shape in doc.Pages[0].Shapes)
+                        {
+                            if (shape.Text != null && shape.Text.Contains("© Aspose 2016"))
+                            {
+                                shape.FormattedTextFragments.Clear();
+                                shape.FormattedTextFragments.Add("© GroupDocs 2017", new Font("Calibri", 19, FontStyle.Bold), Color.Red, Color.Aqua);
+                            }
+                        }
+
+                        // Save changes
+                        doc.Save();
+                    }
+                    //ExEnd:ReplaceTextWithFormattingVisio_18.1
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Replaces shape image
+            /// </summary> 
+            public static void ReplaceShapeImage()
+            {
+                try
+                {
+                    //ExStart:ReplaceShapeImageVisio_18.1
+                    using (DiagramDocument doc = Document.Load<DiagramDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        foreach (DiagramShape shape in doc.Pages[0].Shapes)
+                        {
+                            if (shape.Image != null)
+                            {
+                                shape.Image = new DiagramWatermarkableImage(File.ReadAllBytes(@"D:\test.png"));
+                            }
+                        }
+
+                        // Save changes
+                        doc.Save();
+                    }
+                    //ExEnd:ReplaceShapeImageVisio_18.1
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+        }
+        public static class Email
+        {
+            // initialize file path
+            //ExStart:SourceEmailFilePath
+            private const string FILE_PATH = "Documents/sample.msg";
+            private const string ATTACHMENT_PATH = "Documents/samplewithattachments.msg";
+            private const string IMAGE_PATH = "Images/sample.jpg";
+            //ExEnd:SourceEmailFilePath
+
+            /// <summary>
+            /// Load an email message 
+            /// </summary> 
+            public static void LoadEmailMessage()
+            {
+                try
+                {
+                    //ExStart:LoadEmailMessage
+                    using (EmailDocument doc = Document.Load<EmailDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        // ...
+                    }
+                    //ExEnd:LoadEmailMessage
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Extract all attachments from an email message 
+            /// </summary> 
+            public static void ExtractAllAttachments()
+            {
+                try
+                {
+                    //ExStart:ExtractAllAttachments
+                    using (EmailDocument doc = Document.Load<EmailDocument>(Utilities.MapSourceFilePath(ATTACHMENT_PATH)))
+                    {
+                        foreach (EmailAttachment attachment in doc.Attachments)
+                        {
+                            Console.WriteLine("Name: {0}", attachment.Name);
+                            Console.WriteLine("File format: {0}", attachment.DocumentInfo.FileFormat);
+                            //File.WriteAllBytes(attachment.Name, attachment.Content);
+                        }
+                    }
+                    //ExEnd:ExtractAllAttachments
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Remove particular attachments from an email message
+            /// </summary> 
+            public static void RemoveAttachment()
+            {
+                try
+                {
+                    //ExStart:RemoveAttachment
+                    using (EmailDocument doc = Document.Load<EmailDocument>(Utilities.MapSourceFilePath(ATTACHMENT_PATH)))
+                    {
+                        for (int i = doc.Attachments.Count - 1; i >= 0; i--)
+                        {
+                            EmailAttachment attachment = doc.Attachments[i];
+
+                            // Remove all attached pdf files with a particular name
+                            if (attachment.Name.Contains("sample") && attachment.DocumentInfo.FileFormat == FileFormat.Docx)
+                            {
+                                doc.Attachments.RemoveAt(i);
+                            }
+                        }
+
+                        // Save changes
+                        doc.Save();
+                    }
+                    //ExEnd:RemoveAttachment
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Add watermark to all attached files of supported types
+            /// </summary> 
+            public static void AddWatermarkToAllAttachment()
+            {
+                try
+                {
+                    //ExStart:AddWatermarkToAllAttachment
+                    TextWatermark watermark = new TextWatermark("Test watermark", new Font("Arial", 19));
+                    using (EmailDocument doc = Document.Load<EmailDocument>(Utilities.MapSourceFilePath(ATTACHMENT_PATH)))
+                    {
+                        foreach (EmailAttachment attachment in doc.Attachments)
+                        {
+                            // Check if the attached file is supported by GroupDocs.Watermark
+                            if (attachment.DocumentInfo.FileFormat != FileFormat.Undefined && !attachment.DocumentInfo.IsEncrypted)
+                            {
+                                // Load the attached document
+                                using (Document attachedDocument = attachment.LoadDocument())
+                                {
+                                    // Add wateramrk
+                                    attachedDocument.AddWatermark(watermark);
+
+                                    // Save changes in the attached file
+                                    attachedDocument.Save();
+                                }
+                            }
+                        }
+                        // Save changes
+                        doc.Save();
+                    }
+                    //ExEnd:AddWatermarkToAllAttachment
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Add an attachment to an email message
+            /// </summary> 
+            public static void AddAttachment()
+            {
+                try
+                {
+                    //ExStart:AddAttachment
+                    using (EmailDocument doc = Document.Load<EmailDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        doc.Attachments.Add(File.ReadAllBytes(Utilities.MapSourceFilePath(ATTACHMENT_PATH)), "sample.msg");
+
+                        // Save changes
+                        doc.Save();
+                    }
+                    //ExEnd:AddAttachment
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Modify email message body and subject
+            /// </summary> 
+            public static void UpdateEmailBody()
+            {
+                try
+                {
+                    //ExStart:UpdateEmailBody
+                    using (EmailDocument doc = Document.Load<EmailDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        // Set the plain text body
+                        doc.Body = "Test plain text body";
+
+                        // Set the html body
+                        doc.HtmlBody = "<html><body>Test html body</body></html>";
+
+                        // Set the email subject
+                        doc.Subject = "Test subject";
+
+                        // Save changes
+                        doc.Save();
+                    }
+                    //ExEnd:UpdateEmailBody
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Remove all embedded jpeg images from an email message
+            /// </summary> 
+            public static void RemoveEmbeddedImages()
+            {
+                try
+                {
+                    //ExStart:RemoveEmbeddedImages
+                    using (EmailDocument doc = Document.Load<EmailDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        for (int i = doc.EmbeddedObjects.Count - 1; i >= 0; i--)
+                        {
+                            if (doc.EmbeddedObjects[i].DocumentInfo.FileFormat == FileFormat.Jpeg)
+                            {
+                                // Remove reference to the image from html body
+                                string pattern = string.Format("<img[^>]*src=\"cid:{0}\"[^>]*>", doc.EmbeddedObjects[i].ContentId);
+                                doc.HtmlBody = Regex.Replace(doc.HtmlBody, pattern, string.Empty);
+
+                                // Remove the image
+                                doc.EmbeddedObjects.RemoveAt(i);
+                            }
+                        }
+                        doc.Save();
+                    }
+                    //ExEnd:RemoveEmbeddedImages
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Embed image into email message body
+            /// </summary> 
+            public static void AddEmbeddedImage()
+            {
+                try
+                {
+                    //ExStart:AddEmbeddedImage
+                    using (EmailDocument doc = Document.Load<EmailDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        doc.EmbeddedObjects.Add(File.ReadAllBytes(Utilities.MapSourceFilePath(IMAGE_PATH)), "sample.jpg");
+                        EmailEmbeddedObject embeddedObject = doc.EmbeddedObjects[doc.EmbeddedObjects.Count - 1];
+                        doc.HtmlBody = string.Format("<html><body>This is an embedded image: <img src=\"cid:{0}\"></body></html>", embeddedObject.ContentId);
+                        doc.Save();
+                    }
+                    //ExEnd:AddEmbeddedImage
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// List all message recipients
+            /// </summary> 
+            public static void ListEmailRecipients()
+            {
+                try
+                {
+                    //ExStart:ListEmailRecipients
+                    using (EmailDocument doc = Document.Load<EmailDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        // List all direct recipients
+                        foreach (EmailAddress address in doc.To)
+                        {
+                            Console.WriteLine(address.Address);
+                        }
+
+                        // List all CC recipients
+                        foreach (EmailAddress address in doc.Cc)
+                        {
+                            Console.WriteLine(address.Address);
+                        }
+
+                        // List all BCC recipients
+                        foreach (EmailAddress address in doc.Bcc)
+                        {
+                            Console.WriteLine(address.Address);
+                        }
+                    }
+                    //ExEnd:ListEmailRecipients
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
+            /// <summary>
+            /// Find particular text fragments in email message body/subject
+            /// </summary> 
+            public static void SearchTextInBody()
+            {
+                try
+                {
+                    //ExStart:SearchTextInBody
+                    using (EmailDocument doc = Document.Load<EmailDocument>(Utilities.MapSourceFilePath(FILE_PATH)))
+                    {
+                        SearchCriteria criteria = new TextSearchCriteria("test", false);
+
+                        // Specify search locations
+                        doc.SearchableObjects.EmailSearchableObjects = EmailSearchableObjects.Subject | EmailSearchableObjects.HtmlBody | EmailSearchableObjects.PlainTextBody;
+
+                        // Note, search is performed only if you pass TextSearchCriteria instance to FindWatermarks method
+                        PossibleWatermarkCollection watermarks = doc.FindWatermarks(criteria);
+
+                        // Remove found text fragments
+                        watermarks.Clear();
+
+                        // Save changes
+                        doc.Save();
+                    }
+                    //ExEnd:SearchTextInBody
+                }
+                catch (Exception exp)
+                {
+                    Console.Write(exp.Message);
+                }
+            }
+
         }
     }
 }

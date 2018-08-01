@@ -16,7 +16,7 @@ namespace GroupDocs.Watermark.Examples.CSharp
              *  Applying product license
              *  Please uncomment the statement if you do have license.
              */
-            //Utilities.ApplyLicense();
+            Utilities.ApplyLicense();
             //ExEnd:ApplyingLicense
 
 
@@ -65,6 +65,15 @@ namespace GroupDocs.Watermark.Examples.CSharp
 
             //Search for watermark specifying which objects should be included in the search for particular document instance
             //WatermarkOperations.SearchWatermarkInParticularObjectsForParticularDocument();
+
+            // Edit text in found watermarks
+            //WatermarkOperations.EditTextInFoundWatermarks();
+
+            // Edit text with formatting in found watermarks
+            //WatermarkOperations.EditTextWithFormattingInFoundWatermarks();
+
+            // Replace image in the found watermarks
+            //WatermarkOperations.ReplacesImageInFoundWatermarks();
             #endregion
 
             #region Working with PDF Documents
@@ -121,6 +130,35 @@ namespace GroupDocs.Watermark.Examples.CSharp
 
             // Add watermark with page margin type
             //Documents.PDF.AddWatermarkWithPageMrginType();
+
+            // Replaces text for particular XObject
+            //Documents.PDF.ReplaceTextForParticularXObject();
+
+            // Replaces text for particular artifact 
+            //Documents.PDF.ReplaceTextForParticularArtifact();
+
+            // Replaces text for particular annotation 
+            //Documents.PDF.ReplaceTextForParticularAnnotation();
+
+            // Replaces text for particular XObject with formatting 
+            //Documents.PDF.ReplaceTextForParticularXObjectWithFormatting();
+
+            // Replaces text for particular artifact with formatting 
+            //Documents.PDF.ReplaceTextForParticularArtifactWithFormatting();
+
+            // Replaces text for particular annotation with formatting 
+            //Documents.PDF.ReplaceTextForParticularAnnotationWithFormatting();
+
+            // Replaces image for particular XObject
+            //Documents.PDF.ReplaceImageForParticularXObject();
+
+            // Replaces image for particular artifact
+            //Documents.PDF.ReplaceImageForParticularArtifact();
+
+            // Replaces image for particular annotation
+            //Documents.PDF.ReplaceImageForParticularAnnotation();
+
+
             #endregion
 
             #region Working with attachments in a PDF document
@@ -195,6 +233,22 @@ namespace GroupDocs.Watermark.Examples.CSharp
 
             // Modify shape properties
             //Documents.Word.ModifyShapeProperties();
+
+            // Protect Word document
+            //Documents.Word.ProtectWordDocument();
+
+            // UnProtect Word document
+            //Documents.Word.UnProtectWordDocument();
+
+            // Add locked watermark to a section of Word document
+            //Documents.Word.AddLockedWatermarkToSection();
+
+            // Add locked watermark to all pages of Word document
+            //Documents.Word.AddLockedWatermarkToAllPages();
+
+            // Add locked watermark to particular pages of Word document
+            //Documents.Word.AddLockedWatermarkToParticularPages();
+
             #endregion
 
             #region Working with Excel Documents
